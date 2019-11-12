@@ -15,7 +15,6 @@ public class DrawingArea extends JComponent {
     private Image image;
     private Graphics2D graphics2D;
     public static final int DRAWING = 0;
-    public static final int MOVING = 1;
     public int mode = DRAWING;
     private  Point draggedPoint = null;
     private Integer prevX = null;
@@ -44,20 +43,14 @@ public class DrawingArea extends JComponent {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                if (mode == MOVING) {
-                    onMousePressedWhenMoving(e);
-                }
+                onMousePressedWhenMoving(e);
+
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                if (mode == DRAWING) {
-                    onMouseReleasedWhenDrawing(e);
-                }
-                if (mode == MOVING) {
-                    onMouseReleasedWhenMoving(e);
-                }
+                onMouseReleasedWhenDrawing(e);
             }
         });
 
@@ -82,10 +75,6 @@ public class DrawingArea extends JComponent {
         });
     }
 
-    private void onMouseReleasedWhenMoving(MouseEvent e) {
-        draggedPoint = null;
-    }
-
     private void onMousePressedWhenMoving(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
@@ -101,10 +90,13 @@ public class DrawingArea extends JComponent {
     }
 
     private void onMouseReleasedWhenDrawing(MouseEvent event) {
-        int x = event.getX();
-        int y = event.getY();
-        Point point = new Point(x, y);
-        main.addPoint(point);
+        if (draggedPoint == null) {
+            int x = event.getX();
+            int y = event.getY();
+            Point point = new Point(x, y);
+            main.addPoint(point);
+        }
+        draggedPoint = null;
     }
 
     public void redraw() {
@@ -142,20 +134,5 @@ public class DrawingArea extends JComponent {
         graphics2D.fillRect(0, 0, getSize().width, getSize().height);
         graphics2D.setPaint(Color.black);
         repaint();
-    }
-
-    public void flush() {
-        clear();
-//        shapes.forEach(s -> graphics2D.draw(s));
-        repaint();
-    }
-
-
-    public void activateDrawingMode(ActionEvent event) {
-        mode = DRAWING;
-    }
-
-    public void activateDraggingMode(ActionEvent event) {
-        mode = MOVING;
     }
 }

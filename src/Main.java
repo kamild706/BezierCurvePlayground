@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +20,7 @@ public class Main {
     public List<Point> points = new ArrayList<>();
 
     private void start() {
-        JFrame frame = new JFrame("Zadanie 1");
+        JFrame frame = new JFrame("Zadanie 6");
         Container container = frame.getContentPane();
         container.setLayout(new BorderLayout());
 
@@ -28,7 +31,6 @@ public class Main {
         BoxLayout boxLayout = new BoxLayout(controls, BoxLayout.Y_AXIS);
         controls.setLayout(boxLayout);
         controls.setPreferredSize(new Dimension(300, HEIGHT));
-        controls.add(createActionButtons());
         controls.add(createInputArea());
 
         container.add(controls, BorderLayout.WEST);
@@ -43,9 +45,23 @@ public class Main {
         JTextArea area = new JTextArea();
         this.inputArea = area;
         area.setPreferredSize(new Dimension(250, 500));
+
+        Action action = new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleAccept(null);
+            }
+        };
+
+        area.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK), "myAction");
+        area.getActionMap().put("myAction", action);
+
+
+
         container.add(area);
 
-        JButton button = new JButton("Akceptuj");
+        JButton button = new JButton("Zastosuj");
         button.addActionListener(this::handleAccept);
         container.add(button);
 
@@ -69,20 +85,6 @@ public class Main {
         points.clear();
         points.addAll(newPoints);
         drawingArea.redraw();
-    }
-
-    private JPanel createActionButtons() {
-        JPanel container = new JPanel();
-
-        JButton drawButton = new JButton("Rysowanie");
-        drawButton.addActionListener(drawingArea::activateDrawingMode);
-        container.add(drawButton);
-
-        JButton dragButton = new JButton("Przemieszczanie");
-        dragButton.addActionListener(drawingArea::activateDraggingMode);
-        container.add(dragButton);
-
-        return container;
     }
 
     public static void main(String[] args) {

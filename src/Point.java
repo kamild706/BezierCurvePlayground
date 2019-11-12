@@ -17,6 +17,6 @@ public class Point {
         double dx = Math.pow(px - x, 2);
         double dy = Math.pow(py - y, 2);
         double distance = Math.sqrt(dx + dy);
-        return distance < 20;
+        return distance < 25;
     }
 }
