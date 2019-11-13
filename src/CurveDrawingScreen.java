@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.NotNull;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -7,16 +5,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class CurveDrawingScreen implements Subject<List<Point>> {
+class CurveDrawingScreen extends AbstractSubject<List<Point>> {
 
-    private final Set<Observer<? super List<Point>>> mObservers = new HashSet<>();
     private final List<Point> mPoints = new ArrayList<>();
     private CurveArea mCurveArea;
-
 
     private void addPoint(Point point) {
         mPoints.add(point);
@@ -24,18 +18,9 @@ public class CurveDrawingScreen implements Subject<List<Point>> {
         dispatchingValue(mPoints);
     }
 
-    private void dispatchingValue(List<Point> points) {
-        mObservers.forEach(observer -> observer.onChanged(points));
-    }
-
     Component getComponent() {
         mCurveArea = new CurveArea();
         return mCurveArea;
-    }
-
-    @Override
-    public void observe(@NotNull Observer<List<Point>> observer) {
-        mObservers.add(observer);
     }
 
     void setPointsSource(Subject<List<Point>> source) {
@@ -109,7 +94,7 @@ public class CurveDrawingScreen implements Subject<List<Point>> {
             prevX = currX;
             prevY = currY;
 
-            Point point = new Point(draggedPoint.x + dx, draggedPoint.y + dy);
+            Point point = draggedPoint.movedBy(dx, dy);
             substitutePoints(draggedPoint, point);
             draggedPoint = point;
         }
@@ -152,8 +137,6 @@ public class CurveDrawingScreen implements Subject<List<Point>> {
         }
 
         private Path2D pointsToPath(List<Point> points) {
-            if (points.size() == 0) return null;
-
             Path2D path = new Path2D.Double();
             Point first = points.get(0);
             path.moveTo(first.x, first.y);

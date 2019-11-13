@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.NotNull;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,12 +6,10 @@ import java.awt.event.KeyEvent;
 import java.util.*;
 import java.util.List;
 
-public class PointsDetailsEditor implements Subject<List<Point>> {
+class PointsDetailsEditor extends AbstractSubject<List<Point>> {
 
     private static final String ACTION_CTRL_ENTER = "ACTION_CTRL_ENTER";
-    private final Set<Observer<? super List<Point>>> mObservers = new HashSet<>();
     private JTextArea mTextArea;
-
 
     private JButton createApplyButton() {
         JButton button = new JButton("Apply");
@@ -40,21 +36,12 @@ public class PointsDetailsEditor implements Subject<List<Point>> {
         mTextArea = area;
     }
 
-    private void dispatchingValue(List<Point> points) {
-        mObservers.forEach(observer -> observer.onChanged(points));
-    }
-
     Component getComponent() {
         JPanel panel = new JPanel();
         createTextArea();
         panel.add(mTextArea);
         panel.add(createApplyButton());
         return panel;
-    }
-
-    @Override
-    public void observe(@NotNull Observer<List<Point>> observer) {
-        mObservers.add(observer);
     }
 
     private void onApply() {

@@ -6,6 +6,10 @@ public class App {
     private static final int WIDTH = 1900;
     private static final int HEIGHT = 1000;
 
+    public static void main(String[] args) {
+        new App().start();
+    }
+
     private void start() {
         JFrame frame = new JFrame("Bezier Curve demo");
 
@@ -30,9 +34,5 @@ public class App {
         frame.setSize(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new App().start();
     }
 }
